@@ -48,7 +48,7 @@ namespace GestionProyectosEmpleados.Controllers
         // GET: Asignaciones/Create
         public IActionResult Create()
         {
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Apellido");
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre");
             ViewData["ProyectoId"] = new SelectList(_context.Proyectos, "ProyectoId", "Nombre");
             return View();
         }
@@ -66,7 +66,7 @@ namespace GestionProyectosEmpleados.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Apellido", asignacion.EmpleadoId);
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", asignacion.EmpleadoId);
             ViewData["ProyectoId"] = new SelectList(_context.Proyectos, "ProyectoId", "Nombre", asignacion.ProyectoId);
             return View(asignacion);
         }
@@ -84,7 +84,7 @@ namespace GestionProyectosEmpleados.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Apellido", asignacion.EmpleadoId);
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", asignacion.EmpleadoId);
             ViewData["ProyectoId"] = new SelectList(_context.Proyectos, "ProyectoId", "Nombre", asignacion.ProyectoId);
             return View(asignacion);
         }
@@ -121,7 +121,7 @@ namespace GestionProyectosEmpleados.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Apellido", asignacion.EmpleadoId);
+            ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "EmpleadoId", "Nombre", asignacion.EmpleadoId);
             ViewData["ProyectoId"] = new SelectList(_context.Proyectos, "ProyectoId", "Nombre", asignacion.ProyectoId);
             return View(asignacion);
         }
