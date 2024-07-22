@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,10 +17,21 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // GET: Asignaciones
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var applicationDbContext = _context.Asignaciones.Include(a => a.Empleado).Include(a => a.Proyecto);
-            return View(await applicationDbContext.ToListAsync());
+            var asignaciones = from a in _context.Asignaciones
+                               .Include(a => a.Empleado)
+                               .Include(a => a.Proyecto)
+                               select a;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                asignaciones = asignaciones.Where(a => a.Rol.Contains(searchString)
+                                                    || a.Empleado.Nombre.Contains(searchString)
+                                                    || a.Proyecto.Nombre.Contains(searchString));
+            }
+
+            return View(await asignaciones.ToListAsync());
         }
 
         // GET: Asignaciones/Details/5
@@ -36,7 +45,7 @@ namespace GestionProyectosEmpleados.Controllers
             var asignacion = await _context.Asignaciones
                 .Include(a => a.Empleado)
                 .Include(a => a.Proyecto)
-                .FirstOrDefaultAsync(m => m.EmpleadoId == id);
+                .FirstOrDefaultAsync(m => m.AsignacionId == id);
             if (asignacion == null)
             {
                 return NotFound();
@@ -54,8 +63,6 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // POST: Asignaciones/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AsignacionId,FechaAsignacion,Rol,EmpleadoId,ProyectoId")] Asignacion asignacion)
@@ -90,13 +97,11 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // POST: Asignaciones/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AsignacionId,FechaAsignacion,Rol,EmpleadoId,ProyectoId")] Asignacion asignacion)
         {
-            if (id != asignacion.EmpleadoId)
+            if (id != asignacion.AsignacionId)
             {
                 return NotFound();
             }
@@ -110,7 +115,7 @@ namespace GestionProyectosEmpleados.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AsignacionExists(asignacion.EmpleadoId))
+                    if (!AsignacionExists(asignacion.AsignacionId))
                     {
                         return NotFound();
                     }
@@ -137,7 +142,7 @@ namespace GestionProyectosEmpleados.Controllers
             var asignacion = await _context.Asignaciones
                 .Include(a => a.Empleado)
                 .Include(a => a.Proyecto)
-                .FirstOrDefaultAsync(m => m.EmpleadoId == id);
+                .FirstOrDefaultAsync(m => m.AsignacionId == id);
             if (asignacion == null)
             {
                 return NotFound();
@@ -155,15 +160,15 @@ namespace GestionProyectosEmpleados.Controllers
             if (asignacion != null)
             {
                 _context.Asignaciones.Remove(asignacion);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AsignacionExists(int id)
         {
-            return _context.Asignaciones.Any(e => e.EmpleadoId == id);
+            return _context.Asignaciones.Any(e => e.AsignacionId == id);
         }
     }
 }

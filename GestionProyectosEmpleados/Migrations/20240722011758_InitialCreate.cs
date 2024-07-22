@@ -34,7 +34,7 @@ namespace GestionProyectosEmpleados.Migrations
                     ProyectoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -46,15 +46,16 @@ namespace GestionProyectosEmpleados.Migrations
                 name: "Asignaciones",
                 columns: table => new
                 {
-                    EmpleadoId = table.Column<int>(type: "int", nullable: false),
-                    ProyectoId = table.Column<int>(type: "int", nullable: false),
-                    AsignacionId = table.Column<int>(type: "int", nullable: false),
+                    AsignacionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FechaAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Rol = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Rol = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EmpleadoId = table.Column<int>(type: "int", nullable: false),
+                    ProyectoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Asignaciones", x => new { x.EmpleadoId, x.ProyectoId });
+                    table.PrimaryKey("PK_Asignaciones", x => x.AsignacionId);
                     table.ForeignKey(
                         name: "FK_Asignaciones_Empleados_EmpleadoId",
                         column: x => x.EmpleadoId,
@@ -68,6 +69,11 @@ namespace GestionProyectosEmpleados.Migrations
                         principalColumn: "ProyectoId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Asignaciones_EmpleadoId",
+                table: "Asignaciones",
+                column: "EmpleadoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Asignaciones_ProyectoId",

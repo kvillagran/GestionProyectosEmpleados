@@ -17,17 +17,19 @@ namespace GestionProyectosEmpleados.Models
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Asignacion>()
-                .HasKey(a => new { a.EmpleadoId, a.ProyectoId });
+                .HasKey(a => a.AsignacionId);
 
             modelBuilder.Entity<Asignacion>()
                 .HasOne(a => a.Empleado)
                 .WithMany(e => e.Asignaciones)
-                .HasForeignKey(a => a.EmpleadoId);
+                .HasForeignKey(a => a.EmpleadoId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Asignacion>()
                 .HasOne(a => a.Proyecto)
                 .WithMany(p => p.Asignaciones)
-                .HasForeignKey(a => a.ProyectoId);
+                .HasForeignKey(a => a.ProyectoId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

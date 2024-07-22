@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionProyectosEmpleados.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240713042812_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240722014011_UpdateAsignacionRequiredFields")]
+    partial class UpdateAsignacionRequiredFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,24 +27,29 @@ namespace GestionProyectosEmpleados.Migrations
 
             modelBuilder.Entity("GestionProyectosEmpleados.Models.Asignacion", b =>
                 {
-                    b.Property<int>("EmpleadoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProyectoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("AsignacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AsignacionId"));
+
+                    b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaAsignacion")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ProyectoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Rol")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("EmpleadoId", "ProyectoId");
+                    b.HasKey("AsignacionId");
+
+                    b.HasIndex("EmpleadoId");
 
                     b.HasIndex("ProyectoId");
 
@@ -92,7 +97,8 @@ namespace GestionProyectosEmpleados.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");

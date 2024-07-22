@@ -1,18 +1,16 @@
 ﻿@model GestionProyectosEmpleados.Models.Proyecto
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Proyecto";
 }
 
-<h1>Edit</h1>
+<h1>Edit Proyecto</h1>
 
 <h4>Proyecto</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProyectoId" />
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
@@ -40,5 +38,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

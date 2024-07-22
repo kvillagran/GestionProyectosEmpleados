@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,19 +8,20 @@ namespace GestionProyectosEmpleados.Models
     {
         public int AsignacionId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de asignación es obligatoria.")]
+        [DataType(DataType.Date)]
         public DateTime FechaAsignacion { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string Rol { get; set; } = string.Empty; // Inicializar con un valor por defecto
+        [Required(ErrorMessage = "El rol es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El rol no puede exceder los 100 caracteres.")]
+        public string Rol { get; set; } = string.Empty;
 
         [ForeignKey("Empleado")]
-        public int EmpleadoId { get; set; }
-        public Empleado Empleado { get; set; } = null!; // Usar 'null!' para inicializar como no nulo
+        public int? EmpleadoId { get; set; }
+        public Empleado? Empleado { get; set; }
 
         [ForeignKey("Proyecto")]
-        public int ProyectoId { get; set; }
-        public Proyecto Proyecto { get; set; } = null!; // Usar 'null!' para inicializar como no nulo
+        public int? ProyectoId { get; set; }
+        public Proyecto? Proyecto { get; set; }
     }
 }

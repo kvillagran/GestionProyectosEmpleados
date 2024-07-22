@@ -19,9 +19,17 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // GET: Empleados
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Empleados.ToListAsync());
+            var empleados = from e in _context.Empleados
+                            select e;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                empleados = empleados.Where(s => s.Nombre.Contains(searchString) || s.Apellido.Contains(searchString));
+            }
+
+            return View(await empleados.ToListAsync());
         }
 
         // GET: Empleados/Details/5
@@ -81,8 +89,6 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // POST: Empleados/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EmpleadoId,Nombre,Apellido,FechaContratacion,Puesto")] Empleado empleado)
@@ -142,9 +148,9 @@ namespace GestionProyectosEmpleados.Controllers
             if (empleado != null)
             {
                 _context.Empleados.Remove(empleado);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

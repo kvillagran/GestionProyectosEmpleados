@@ -4,6 +4,7 @@ using GestionProyectosEmpleados.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionProyectosEmpleados.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240722013333_UpdateAsignacionModel")]
+    partial class UpdateAsignacionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,13 +33,13 @@ namespace GestionProyectosEmpleados.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AsignacionId"));
 
-                    b.Property<int?>("EmpleadoId")
+                    b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaAsignacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ProyectoId")
+                    b.Property<int>("ProyectoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Rol")
@@ -115,12 +118,14 @@ namespace GestionProyectosEmpleados.Migrations
                     b.HasOne("GestionProyectosEmpleados.Models.Empleado", "Empleado")
                         .WithMany("Asignaciones")
                         .HasForeignKey("EmpleadoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("GestionProyectosEmpleados.Models.Proyecto", "Proyecto")
                         .WithMany("Asignaciones")
                         .HasForeignKey("ProyectoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Empleado");
 

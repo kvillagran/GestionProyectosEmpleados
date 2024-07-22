@@ -19,9 +19,17 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // GET: Proyectos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Proyectos.ToListAsync());
+            var proyectos = from p in _context.Proyectos
+                            select p;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                proyectos = proyectos.Where(s => s.Nombre.Contains(searchString) || s.Descripcion.Contains(searchString));
+            }
+
+            return View(await proyectos.ToListAsync());
         }
 
         // GET: Proyectos/Details/5
@@ -49,8 +57,6 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // POST: Proyectos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProyectoId,Nombre,Descripcion,FechaInicio")] Proyecto proyecto)
@@ -81,8 +87,6 @@ namespace GestionProyectosEmpleados.Controllers
         }
 
         // POST: Proyectos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProyectoId,Nombre,Descripcion,FechaInicio")] Proyecto proyecto)
@@ -142,9 +146,9 @@ namespace GestionProyectosEmpleados.Controllers
             if (proyecto != null)
             {
                 _context.Proyectos.Remove(proyecto);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
